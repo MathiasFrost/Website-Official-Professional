@@ -1,0 +1,45 @@
+﻿@inject FilterService Filters
+@inject Blazored.SessionStorage.ISyncSessionStorageService SessionStorage
+
+@code
+{
+	private int CurrentLang;
+	private IList<int> TotalLangs = new List<int>();
+	private InputSelect<int> LangSelector { get; set; }
+
+	protected override void OnInitialized()
+	{
+		base.OnInitialized();
+		CurrentLang = SessionStorage.GetItem<int>("lang");
+		Filters.CurrentLang = (FilterService.Language)(CurrentLang + 1);
+		foreach (KeyValuePair<int, string> langs in Filters.Languages)
+		{
+			TotalLangs.Add(langs.Key);
+		}
+	}
+
+	protected override void OnAfterRender(bool firstRender)
+	{
+		base.OnAfterRender(firstRender);
+		LangSelector.Value = CurrentLang;
+		if (firstRender) this.StateHasChanged();
+	}
+
+	private void HandleInput(int value)
+	{
+		CurrentLang = value;
+		Filters.CurrentLang = (FilterService.Language)(CurrentLang + 1);
+		SessionStorage.SetItem("lang", CurrentLang);
+	}
+}
+
+<div class="lang-select">
+	<EditForm Model="TotalLangs">
+		<InputSelect class="lang-select-box form-control" @ref="LangSelector" DisplayName="Error" ValueChanged="((int value) => HandleInput(value))" ValueExpression="(() => CurrentLang)">
+			@foreach (int i in TotalLangs)
+			{
+				<option class="form-control" value="@i">@Filters.Languages[i]</option>
+			}
+		</InputSelect>
+	</EditForm>
+</div>

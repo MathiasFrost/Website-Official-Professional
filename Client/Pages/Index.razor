@@ -1,0 +1,36 @@
+﻿@page "/"
+
+@using WebsiteOPr.Shared
+
+@inject FilterService Filters
+@inject HttpClient Http
+
+@code
+{
+	private TextService Text = new TextService();
+
+	protected override async Task OnInitializedAsync()
+	{
+		await base.OnInitializedAsync();
+		Text = await Http.GetFromJsonAsync<TextService>("main/text");
+	}
+}
+
+<h1>@Text.Welcome</h1>
+<p>@Text.Intro</p>
+
+@switch (Filters.CurrentLang)
+{
+	case FilterService.Language.Random:
+		<p>0000000</p>
+		break;
+	case FilterService.Language.English:
+		<p>English</p>
+		break;
+	case FilterService.Language.Norwegian:
+		<p>Norsk</p>
+		break;
+	case FilterService.Language.Japanese:
+		<p>日本語</p>
+		break;
+}
