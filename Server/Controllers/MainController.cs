@@ -12,16 +12,18 @@ namespace WebsiteOPr.Server.Controllers
 	{
 		private readonly string BasePath;
 
+		// Sets correct Base Path for files in the Data folder.
 		public MainController()
 		{
 			BasePath = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development" ? "../Server/Data/" : "D:/home/site/wwwroot/Data/";
 		}
 
-		[HttpGet]
-		[Route("text")]
-		public TextService GetTextService()
+		// Returns Text based on the Language enum.
+		[HttpGet("text/{lang}")]
+		public TextModel GetTextService(int lang)
 		{
-			return JsonConvert.DeserializeObject<TextService>(File.ReadAllText(BasePath + "English.json"));
+			FilterService.Language language = (FilterService.Language)lang;
+			return JsonConvert.DeserializeObject<TextModel>(File.ReadAllText(BasePath + language.ToString() + ".json"));
 		}
 	}
 }

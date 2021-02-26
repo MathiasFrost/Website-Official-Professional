@@ -15,12 +15,14 @@ namespace WebsiteOPr.Server
 
 		public IConfiguration Configuration { get; }
 
+		// Just adding services.
 		public void ConfigureServices(IServiceCollection services)
 		{
 			services.AddControllersWithViews();
 			services.AddRazorPages();
 		}
 
+		// Sets correct error handling and maps endpoints.
 		public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
 		{
 			if (env.IsDevelopment())

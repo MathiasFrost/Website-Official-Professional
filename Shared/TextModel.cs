@@ -1,6 +1,6 @@
 ﻿namespace WebsiteOPr.Shared
 {
-	public class TextService
+	public class TextModel
 	{
 		public string Welcome { get; set; } = "";
 		public string Intro { get; set; } = "";

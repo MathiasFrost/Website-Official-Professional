@@ -7,28 +7,33 @@
 	private IList<int> TotalLangs = new List<int>();
 	private InputSelect<int> LangSelector { get; set; }
 
+	// Get current Language from Session and Fill InputSelect with all Language options.
 	protected override void OnInitialized()
 	{
 		base.OnInitialized();
 		CurrentLang = SessionStorage.GetItem<int>("lang");
-		Filters.CurrentLang = (FilterService.Language)(CurrentLang + 1);
+		Filters.CurrentLang = (FilterService.Language)(CurrentLang);
 		foreach (KeyValuePair<int, string> langs in Filters.Languages)
 		{
 			TotalLangs.Add(langs.Key);
 		}
 	}
 
+	// Have to force InputSelect to show correct value.
 	protected override void OnAfterRender(bool firstRender)
 	{
 		base.OnAfterRender(firstRender);
+#pragma warning disable BL0005 // Disable manual value assignment warning.
 		LangSelector.Value = CurrentLang;
+#pragma warning restore BL0005 // Reenable
 		if (firstRender) this.StateHasChanged();
 	}
 
+	// Set FilterService to correct Language and store it in Session.
 	private void HandleInput(int value)
 	{
 		CurrentLang = value;
-		Filters.CurrentLang = (FilterService.Language)(CurrentLang + 1);
+		Filters.SetLanguage((FilterService.Language)(CurrentLang));
 		SessionStorage.SetItem("lang", CurrentLang);
 	}
 }

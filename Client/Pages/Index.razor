@@ -1,18 +1,25 @@
 ﻿@page "/"
 
-@using WebsiteOPr.Shared
-
 @inject FilterService Filters
 @inject HttpClient Http
 
 @code
 {
-	private TextService Text = new TextService();
+	private TextModel Text = new TextModel();
 
+	// Get the text from server.
 	protected override async Task OnInitializedAsync()
 	{
 		await base.OnInitializedAsync();
-		Text = await Http.GetFromJsonAsync<TextService>("main/text");
+		Text = await Http.GetFromJsonAsync<TextModel>($"main/text/{(int)Filters.CurrentLang}");
+		Filters.OnLangChange += (async () => await HandleLangChange());
+	}
+
+	// Get new text from server that is correct Language.
+	private async Task HandleLangChange()
+	{
+		Text = await Http.GetFromJsonAsync<TextModel>($"main/text/{(int)Filters.CurrentLang}");
+		this.StateHasChanged();
 	}
 }
 

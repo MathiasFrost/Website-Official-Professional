@@ -22,6 +22,7 @@
 	private Dictionary<string, int> Counters = new Dictionary<string, int>();
 	private Dictionary<string, Timer> Timers = new Dictionary<string, Timer>();
 
+	// Probably a better way to do this, but convenient to use "name" as key for all Dics.
 	protected override void OnInitialized()
 	{
 		base.OnInitialized();
@@ -31,11 +32,13 @@
 		}
 	}
 
+	// Just a toggle.
 	private void ToggleNavMenu()
 	{
 		ShowNavMenu = !ShowNavMenu;
 	}
 
+	// Initialize Typewriter effect if it is not in progress.
 	private void HandleHover()
 	{
 		if (!ShowDetailed)
@@ -56,6 +59,7 @@
 		ShowDetailed = true;
 	}
 
+	// Hide Detailed panel if we are still unhovered after 1000ms.
 	private async Task HandleUnhover()
 	{
 		WantShowDetailed = false;
@@ -66,6 +70,7 @@
 		}
 	}
 
+	// Builds a string of random chars, then decodes them into whatever is stored in RefNames.
 	private void Typewriter(Object state, string name)
 	{
 		int len = name.Length;

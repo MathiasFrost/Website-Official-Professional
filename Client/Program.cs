@@ -10,6 +10,7 @@ namespace WebsiteOPr.Client
 {
 	public class Program
 	{
+		// Just adding services.
 		public static async Task Main(string[] args)
 		{
 			var builder = WebAssemblyHostBuilder.CreateDefault(args);
