@@ -15,7 +15,7 @@ namespace WebsiteOPr.Server.Controllers
 		// Sets correct Base Path for files in the Data folder.
 		public MainController()
 		{
-			BasePath = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development" ? "../Server/Data/" : "D:/home/site/wwwroot/Data/";
+			BasePath = Environment.CurrentDirectory + "\\Data\\";
 		}
 
 		// Returns Text based on the Language enum.

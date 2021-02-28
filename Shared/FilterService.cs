@@ -7,7 +7,6 @@ namespace WebsiteOPr.Shared
 	{
 		public enum Language
 		{
-			Random,
 			English,
 			Norwegian,
 			Japanese
@@ -20,9 +19,9 @@ namespace WebsiteOPr.Shared
 		// Create dic with Key corresponding to Language enum and the display text as Value.
 		public FilterService()
 		{
-			Languages.Add(1, "English");
-			Languages.Add(2, "Norsk");
-			Languages.Add(3, "日本語");
+			Languages.Add(0, "English");
+			Languages.Add(1, "Norsk");
+			Languages.Add(2, "日本語");
 		}
 
 		public event Action OnLangChange;

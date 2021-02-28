@@ -10,27 +10,16 @@
 	private string DetailedCSS => ShowDetailed ? "collapse" : null;
 	private string[] Names = new string[]
 	{
-		"Home Page",
+		"Introduction",
 		"Curriculum Vitae",
 		"App Portfolio",
 		"3D Portfolio"
 	};
-	private Dictionary<string, string> RefNames = new Dictionary<string, string>();
 	private Dictionary<string, string> DisplayNames = new Dictionary<string, string>();
 	private Dictionary<string, IList<int>> Pool = new Dictionary<string, IList<int>>();
 	private Dictionary<string, StringBuilder> Builders = new Dictionary<string, StringBuilder>();
 	private Dictionary<string, int> Counters = new Dictionary<string, int>();
 	private Dictionary<string, Timer> Timers = new Dictionary<string, Timer>();
-
-	// Probably a better way to do this, but convenient to use "name" as key for all Dics.
-	protected override void OnInitialized()
-	{
-		base.OnInitialized();
-		foreach (string name in Names)
-		{
-			RefNames.Add(name, name);
-		}
-	}
 
 	// Just a toggle.
 	private void ToggleNavMenu()
@@ -73,9 +62,9 @@
 	// Builds a string of random chars, then decodes them into whatever is stored in RefNames.
 	private void Typewriter(Object state, string name)
 	{
+		Random random = new Random();
 		int len = name.Length;
 		int threshold = len / 2;
-		Random random = new Random();
 		if (Counters[name] < len)
 		{
 			char c = Convert.ToChar(random.Next(33, 122));
@@ -85,7 +74,7 @@
 		if (Counters[name] >= threshold)
 		{
 			int index = Pool[name][random.Next(0, Pool[name].Count)];
-			Builders[name][index] = RefNames[name][index];
+			Builders[name][index] = Names.Where(s => s == name).First()[index];
 			Pool[name].Remove(index);
 		}
 		Counters[name]++;
@@ -110,8 +99,8 @@
 <div class="@NavMenuCSS" @onclick="ToggleNavMenu" @onmouseover="HandleHover" @onmouseout="HandleUnhover">
 	<ul class="nav flex-column">
 		<li class="nav-item px-3">
-			<NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-				<span class="oi" aria-hidden="true"></span> HP
+			<NavLink class="nav-link" href="intro" Match="NavLinkMatch.All">
+				<span class="oi" aria-hidden="true"></span> IN
 			</NavLink>
 		</li>
 		<li class="nav-item px-3">
@@ -137,8 +126,8 @@
 	<div class="side-popup" @onmouseover="HandleHover" @onmouseout="HandleUnhover">
 		<ul class="nav flex-column">
 			<li class="nav-item px-3">
-				<NavLink class="side-popup-item nav-link" href="" Match="NavLinkMatch.All">
-					<span class="oi" aria-hidden="true"></span> @DisplayNames["Home Page"]
+				<NavLink class="side-popup-item nav-link" href="intro" Match="NavLinkMatch.All">
+					<span class="oi" aria-hidden="true"></span> @DisplayNames["Introduction"]
 				</NavLink>
 			</li>
 			<li class="nav-item px-3">

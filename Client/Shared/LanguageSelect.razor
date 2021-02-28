@@ -12,7 +12,7 @@
 	{
 		base.OnInitialized();
 		CurrentLang = SessionStorage.GetItem<int>("lang");
-		Filters.CurrentLang = (FilterService.Language)(CurrentLang);
+		Filters.CurrentLang = (FilterService.Language)CurrentLang;
 		foreach (KeyValuePair<int, string> langs in Filters.Languages)
 		{
 			TotalLangs.Add(langs.Key);
@@ -33,7 +33,7 @@
 	private void HandleInput(int value)
 	{
 		CurrentLang = value;
-		Filters.SetLanguage((FilterService.Language)(CurrentLang));
+		Filters.SetLanguage((FilterService.Language)CurrentLang);
 		SessionStorage.SetItem("lang", CurrentLang);
 	}
 }
