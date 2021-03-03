@@ -22,8 +22,7 @@ namespace WebsiteOPr.Server.Controllers
 		[HttpGet("text/{lang}")]
 		public TextModel GetTextService(int lang)
 		{
-			FilterService.Language language = (FilterService.Language)lang;
-			return JsonConvert.DeserializeObject<TextModel>(File.ReadAllText(BasePath + language.ToString() + ".json"));
+			return JsonConvert.DeserializeObject<TextModel>(File.ReadAllText(BasePath + "Text.json"));
 		}
 	}
 }

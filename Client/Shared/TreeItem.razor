@@ -1,0 +1,51 @@
+﻿@using System.Threading
+
+@code
+{
+	[Parameter]
+	public string Src { get; set; }
+
+	[Parameter]
+	public string Alt { get; set; }
+
+	[Parameter]
+	public string AnimKey { get; set; }
+
+	[Parameter]
+	public string Header { get; set; } = "";
+
+	[Parameter]
+	public bool DrawWire { get; set; }
+
+	private Timer AnimTimer;
+	private string Animation = "1s ease-out forwards ";
+	private string WireAnim = "1s ease-in-out forwards ";
+
+	protected override void OnInitialized()
+	{
+		base.OnInitialized();
+		Animation += AnimKey + "-in";
+		WireAnim += AnimKey + "-wire-in";
+		AnimTimer = new Timer(ToIdle, new AutoResetEvent(false), 1000, Timeout.Infinite);
+	}
+	
+	private void ToIdle(Object state)
+	{
+		Animation = "5s ease-in-out infinite alternate " + AnimKey + "-idle";
+		WireAnim = "5s ease-in-out infinite alternate " + AnimKey + "-wire-idle";
+		this.StateHasChanged();
+		AnimTimer.Dispose();
+		AnimTimer.ConfigureAwait(false);
+	}
+}
+
+<div style="animation:@Animation;">
+	<h1>@Header</h1>
+	<img src=@Src alt="@Alt" />
+</div>
+@if (DrawWire)
+{
+	<svg style="animation:@WireAnim">
+		<line class="wire" x1="100%" y1="100%" x2="0%" y2="0%" />
+	</svg>
+}

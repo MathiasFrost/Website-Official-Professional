@@ -1,123 +1,57 @@
 ﻿@page "/"
 
 @using System.Threading
-@using System.Text
-
-@inject FilterService Filters
-@inject HttpClient Http
 
 @code
 {
-	private Dictionary<string, string> Texts = new Dictionary<string, string>();
-	private Dictionary<string, string> DisplayText = new Dictionary<string, string>();
-	private Dictionary<string, IList<int>> Pool = new Dictionary<string, IList<int>>();
-	private Dictionary<string, Timer> Timers = new Dictionary<string, Timer>();
-	private Dictionary<string, StringBuilder> Builders = new Dictionary<string, StringBuilder>();
-	private Dictionary<string, bool> Direction = new Dictionary<string, bool>();
-
-	// Get the text from server and add Event to handle Language change.
-	protected override async Task OnInitializedAsync()
+	private Dictionary<int, bool> ActiveItems = new Dictionary<int, bool>
 	{
-		Filters.Loading = true;
-		await base.OnInitializedAsync();
-		await InitLangChange(true);
-		Filters.OnLangChange += (async () => await HandleLangChange());
-		Filters.Loading = false;
+		{ 0, false },
+		{ 1, false },
+		{ 2, false },
+		{ 3, false },
+		{ 4, false },
+		{ 5, false },
+		{ 6, false },
+		{ 7, false }
+	};
+	private Timer StateTimer;
+	private int Count = 0;
+
+	protected override void OnInitialized()
+	{
+		base.OnInitialized();
+		StateTimer = new Timer(VoidToRoot, new AutoResetEvent(false), 500, 500);
 	}
-
-	// Randomize DisplayText.
-	private string RandomizeText(string key, string value)
+	
+	private void VoidToRoot(Object state)
 	{
-		Random rand = new Random();
-		string randStr = "";
-		for (int i = 0; i < value.Length; i++)
-		{
-			randStr += Convert.ToChar(rand.Next(33, 122));
-		}
-		return randStr;
-	}
-
-	// Get new text from server that is correct Language.
-	private async Task HandleLangChange()
-	{
-		await InitLangChange(false);
-	}
-
-	// Initialize text change - starting timer -> DecodeText.
-	private async Task InitLangChange(bool first)
-	{
-		TextModel text = await Http.GetFromJsonAsync<TextModel>($"main/text/{(int)Filters.CurrentLang}");
-		Texts = text.GetTexts();
-		foreach (KeyValuePair<string, string> pair in Texts)
-		{
-			int len = pair.Value.Length;
-			int delay = (len * 1000) / (len * len);
-			if (first)
-			{
-				DisplayText.Add(pair.Key, RandomizeText(pair.Key, pair.Value));
-				Builders.Add(pair.Key, new StringBuilder(DisplayText[pair.Key]));
-			}
-			else
-			{
-				int currLen = DisplayText[pair.Key].Length;
-				bool currLongest = len < currLen;
-				delay = currLongest ? (currLen * 1000) / (currLen * currLen) : (len * 1000) / (len * len);
-				len = currLongest ? len : currLen;
-				Timers[pair.Key].Dispose();
-			}
-			Pool[pair.Key] = new List<int>();
-			for (int i = 0; i < len; i++) Pool[pair.Key].Add(i);
-			Direction[pair.Key] = first;
-			Timer timer = new Timer(((Object state) => DecodeText(state, pair.Key)), new AutoResetEvent(false), 0, delay);
-			Timers[pair.Key] = timer;
-		}
-	}
-
-	// Replace random or Previous Language chars with correct ones.
-	private void DecodeText(Object state, string key)
-	{
-		Random rand = new Random();
-		if (Pool[key].Count > 0)
-		{
-			int i = Pool[key][rand.Next(0, Pool[key].Count)];
-			if (Direction[key])
-			{
-				Builders[key][i] = Texts[key][i];
-				DisplayText[key] = Builders[key].ToString();
-				Pool[key].Remove(i);
-			}
-			else
-			{
-				int currLen = DisplayText[key].Length;
-				int refLen = Texts[key].Length;
-				if (currLen < refLen)
-				{
-					Builders[key][i] = Convert.ToChar(rand.Next(33, 122));
-					Builders[key].Insert(i, Convert.ToChar(rand.Next(33, 122)));
-					Pool[key].Add(currLen);
-				}
-				else if (currLen != refLen)
-				{
-					Builders[key] = Builders[key].Remove(i, 1);
-				}
-				if (Pool[key].Count == currLen) Direction[key] = true;
-			}
-			DisplayText[key] = Builders[key].ToString();
-			this.StateHasChanged();
-		}
-		else
-		{
-			Timers[key].Dispose();
-		}
+		ActiveItems[Count] = true;
+		Count++;
+		this.StateHasChanged();
+		if (Count > 4) StateTimer.Dispose();
 	}
 }
 
-@if (!Filters.Loading)
-{
-	<h1>@DisplayText["Welcome"]</h1>
-	<p>@DisplayText["Intro"]</p>
-}
-else
-{
-	<h1>Loading...</h1>
-}
+<div class="tree">
+	@if (ActiveItems[0])
+	{
+		<TreeItem AnimKey="root" Src="resources/ML.png" Alt="Root" DrawWire="false" />
+	}
+	@if (ActiveItems[4])
+	{
+		<TreeItem AnimKey="sm" Src="resources/Placeholder.png" Alt="Social Media Thumbnail" Header="Social Medias" DrawWire="true" />
+	}
+	@if (ActiveItems[3])
+	{
+		<TreeItem AnimKey="cv" Src="resources/Placeholder.png" Alt="CV Thumbnail" Header="Curriculum Vitae" DrawWire="false" />
+	}
+	@if (ActiveItems[2])
+	{
+		<TreeItem AnimKey="app" Src="resources/Placeholder.png" Alt="App Thumbnail" Header="Applications" DrawWire="false" />
+	}
+	@if (ActiveItems[1])
+	{
+		<TreeItem AnimKey="td" Src="resources/Placeholder.png" Alt="3D Thumbnail" Header="3D Art" DrawWire="true" />
+	}
+</div>

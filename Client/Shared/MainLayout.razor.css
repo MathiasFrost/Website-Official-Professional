@@ -10,16 +10,28 @@
 	flex: 1;
 }
 
-.sidebar
+.navbar-brand
 {
-	background-color: var(--Darkest75);
+	margin: auto;
+	background-color: var(--Darkest);
+	height: inherit;
+	width: 7rem;
+	position: relative;
+	right: 3.5rem;
 }
+
+	.navbar-brand > img
+	{
+		max-width: 3.5rem !important;
+		position: relative;
+		left: 2rem;
+	}
 
 .top-row
 {
-	background-color: transparent;
+	background-color: var(--Darkest75);
 	justify-content: flex-end;
-	height: 0rem;
+	height: 3.5rem;
 	display: flex;
 	align-items: center;
 }
@@ -32,8 +44,6 @@
 
 	.top-row ::deep img
 	{
-		position: relative;
-		top: 2rem;
 		max-width: 2rem;
 		margin: -0.3rem;
 	}

@@ -1,4 +1,6 @@
-﻿:root
+﻿/* Base */
+
+:root
 {
 	--Darkest: rgb(12, 12, 12);
 	--Darkest75: rgba(12, 12, 12, 0.75);
@@ -16,14 +18,20 @@
 
 html, body
 {
-	font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+	font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+	font-weight: inherit;
 	background-color: var(--Dark);
 	color: var(--Lightest);
 }
 
+	html::-webkit-scrollbar
+	{
+		display: none;
+	}
+
 a, .btn-link
 {
-	color: #0366d6;
+	color: rgb(153, 106, 206);
 }
 
 .btn-primary
@@ -96,8 +104,6 @@ a, .btn-link
 
 .lang-select
 {
-	position: relative;
-	top: 2rem;
 	width: 15rem;
 }
 
@@ -122,7 +128,300 @@ a, .btn-link
 		color: var(--Darkest);
 	}
 
-.icon-big
+/* Drawing */
+
+.tree
 {
-	max-width: 3rem;
+	height: 52vh;
+}
+
+	.tree > div
+	{
+		position: absolute;
+	}
+
+		.tree > div:first-of-type > img
+		{
+			max-width: 10vw;
+		}
+
+		.tree > div > img
+		{
+			max-width: 14vw;
+		}
+
+		.tree > div > h1
+		{
+			font-size: 2vw;
+		}
+
+	.tree > svg
+	{
+		position: absolute;
+	}
+
+.wire
+{
+	stroke: var(--Lightest);
+	stroke-width: 0.1rem;
+}
+
+/* Animations */
+
+@keyframes root-in
+{
+	0%
+	{
+		opacity: 0.0;
+		top: 100%;
+		left: 43%
+	}
+
+	100%
+	{
+		opacity: 1.0;
+		top: 95%;
+		left: 43%;
+	}
+}
+
+@keyframes root-idle
+{
+	0%
+	{
+		top: 95%;
+		left: 43%;
+	}
+
+	100%
+	{
+		top: 100%;
+		left: 43%;
+	}
+}
+
+@keyframes sm-in
+{
+	0%
+	{
+		opacity: 0.0;
+		top: 95%;
+		left: 43%;
+	}
+
+	100%
+	{
+		opacity: 1.0;
+		top: 45%;
+		left: 80%;
+	}
+}
+
+@keyframes sm-idle
+{
+	0%
+	{
+		top: 45%;
+		left: 80%;
+	}
+
+	100%
+	{
+		top: 50%;
+		left: 80%;
+	}
+}
+
+@keyframes cv-in
+{
+	0%
+	{
+		opacity: 0.0;
+		top: 95%;
+		left: 43%;
+	}
+
+	100%
+	{
+		opacity: 1.0;
+		top: 20%;
+		left: 55%;
+	}
+}
+
+@keyframes cv-idle
+{
+	0%
+	{
+		top: 20%;
+		left: 55%;
+	}
+
+	100%
+	{
+		top: 25%;
+		left: 55%;
+	}
+}
+
+@keyframes app-in
+{
+	0%
+	{
+		opacity: 0.0;
+		top: 95%;
+		left: 43%;
+	}
+
+	100%
+	{
+		opacity: 1.0;
+		top: 20%;
+		left: 30%;
+	}
+}
+
+@keyframes app-idle
+{
+	0%
+	{
+		top: 20%;
+		left: 30%
+	}
+
+	100%
+	{
+		top: 25%;
+		left: 30%;
+	}
+}
+
+@keyframes td-in
+{
+	0%
+	{
+		opacity: 0.0;
+		top: 95%;
+		left: 43%;
+	}
+
+	100%
+	{
+		opacity: 1.0;
+		top: 45%;
+		left: 5%;
+	}
+}
+
+@keyframes td-idle
+{
+	0%
+	{
+		top: 45%;
+		left: 5%;
+	}
+
+	100%
+	{
+		top: 50%;
+		left: 5%;
+	}
+}
+
+@keyframes sm-wire-in
+{
+	0%
+	{
+		opacity: 0.0;
+		bottom: -13%;
+		left: 57%;
+		width: 0%;
+		height: 0%;
+	}
+
+	30%
+	{
+		opacity: 1.0;
+		width: 0%;
+		height: 0%;
+	}
+
+	100%
+	{
+		opacity: 1.0;
+		bottom: -13%;
+		left: 57%;
+		width: 24%;
+		height: 24%;
+	}
+}
+
+@keyframes sm-wire-idle
+{
+	0%
+	{
+		bottom: -13%;
+		left: 57%;
+		width: 24%;
+		height: 24%;
+	}
+
+	100%
+	{
+		bottom: -18%;
+		left: 57%;
+		width: 24%;
+		height: 24%;
+	}
+}
+
+@keyframes td-wire-in
+{
+	0%
+	{
+		opacity: 0.0;
+		bottom: -10%;
+		right: 58%;
+		width: 0%;
+		height: 0%;
+		transform: rotate(0deg);
+	}
+
+	30%
+	{
+		opacity: 1.0;
+		width: 0%;
+		height: 0%;
+	}
+
+	100%
+	{
+		opacity: 1.0;
+		bottom: -10%;
+		right: 58%;
+		width: 24%;
+		height: 24%;
+		transform: rotate(-3deg);
+	}
+}
+
+@keyframes td-wire-idle
+{
+	0%
+	{
+		bottom: -10%;
+		right: 58%;
+		width: 24%;
+		height: 24%;
+		transform: rotate(-3deg);
+	}
+
+	100%
+	{
+		bottom: -13%;
+		right: 58%;
+		width: 24%;
+		height: 24%;
+		transform: rotate(0deg);
+	}
 }

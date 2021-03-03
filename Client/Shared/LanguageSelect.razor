@@ -1,4 +1,5 @@
 ﻿@inject FilterService Filters
+@inject HttpClient Http
 @inject Blazored.SessionStorage.ISyncSessionStorageService SessionStorage
 
 @code
@@ -7,16 +8,19 @@
 	private IList<int> TotalLangs = new List<int>();
 	private InputSelect<int> LangSelector { get; set; }
 
-	// Get current Language from Session and Fill InputSelect with all Language options.
-	protected override void OnInitialized()
+	// Get current Language from Session and Fill InputSelect with all Language options and store all text in FilterService.
+	protected override async Task OnInitializedAsync()
 	{
-		base.OnInitialized();
+		Filters.Loading = true;
+		await base.OnInitializedAsync();
 		CurrentLang = SessionStorage.GetItem<int>("lang");
-		Filters.CurrentLang = (FilterService.Language)CurrentLang;
 		foreach (KeyValuePair<int, string> langs in Filters.Languages)
 		{
 			TotalLangs.Add(langs.Key);
 		}
+		Filters.Text = await Http.GetFromJsonAsync<TextModel>($"main/text/{CurrentLang}");
+		Filters.SetLanguage((FilterService.Language)CurrentLang);
+		Filters.Loading = false;
 	}
 
 	// Have to force InputSelect to show correct value.

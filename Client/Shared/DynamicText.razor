@@ -1,0 +1,134 @@
+﻿@using System.Threading
+@using System.Text
+
+@inject FilterService Filters
+
+@code
+{
+	[Parameter]
+	public int Index { get; set; }
+
+	[Parameter]
+	public string HTML { get; set; } = "p";
+
+	[Parameter]
+	public string CSS { get; set; }
+
+	private bool First = true;
+	private string Text;
+	private string DisplayText;
+	private IList<int> Pool;
+	private Timer TextTimer;
+	private StringBuilder Builder;
+	private bool Direction;
+	private int Count;
+
+	// Get the text from server and add Event to handle Language change.
+	protected override void OnInitialized()
+	{
+		base.OnInitialized();
+		Filters.OnLangChange += InitLangChange;
+	}
+
+	// Initialize text change - starting timer -> DecodeText.
+	private void InitLangChange()
+	{
+		Text = Filters.GetText(Index);
+		int len = Text.Length;
+		int delay = (len * 1000) / (len * len);
+		Pool = new List<int>();
+		if (First) Builder = new StringBuilder(len);
+		else
+		{
+			int currLen = DisplayText.Length;
+			bool currLongest = len < currLen;
+			delay = currLongest ? (currLen * 1000) / (currLen * currLen) : (len * 1000) / (len * len);
+			len = currLongest ? len : currLen;
+			for (int i = 0; i < len; i++) Pool.Add(i);
+			TextTimer.Dispose();
+		}
+		Direction = First;
+		Count = 0;
+		TextTimer = new Timer(First ? Typewriter : DecodeText, new AutoResetEvent(false), 0, delay);
+		First = false;
+	}
+
+	// Replace random or Previous Language chars with correct ones.
+	private void DecodeText(Object state)
+	{
+		if (Count > 1000)
+		{
+			Console.WriteLine("Warning: Timer repeated itself over 1000 times. Disposed. Count: " + Count);
+			TextTimer.Dispose();
+		}
+		Random rand = new Random();
+		if (Pool.Count > 0)
+		{
+			int i = Pool[rand.Next(0, Pool.Count)];
+			if (Direction)
+			{
+				Builder[i] = Text[i];
+				DisplayText = Builder.ToString();
+				Pool.Remove(i);
+			}
+			else
+			{
+				int currLen = DisplayText.Length;
+				int refLen = Text.Length;
+				if (currLen < refLen)
+				{
+					Builder[i] = Convert.ToChar(rand.Next(33, 122));
+					Builder.Insert(i, Convert.ToChar(rand.Next(33, 122)));
+					Pool.Add(currLen);
+				}
+				else if (currLen != refLen)
+				{
+					Builder = Builder.Remove(i, 1);
+				}
+				if (Pool.Count == currLen) Direction = true;
+			}
+			Count++;
+			DisplayText = Builder.ToString();
+			this.StateHasChanged();
+		}
+		else TextTimer.Dispose();
+	}
+
+	// Builds a string of random chars, then decodes them into whatever is stored in RefNames.
+	private void Typewriter(Object state)
+	{
+		if (Count > 1000)
+		{
+			Console.WriteLine("Warning: Timer repeated itself over 1000 times. Disposed. Count: " + Count);
+			TextTimer.Dispose();
+		}
+		Random random = new Random();
+		int len = Text.Length;
+		int threshold = len / 2;
+		if (Count < len)
+		{
+			char c = Convert.ToChar(random.Next(33, 122));
+			Builder.Append(c);
+			Pool.Add(Count);
+		}
+		if (Count >= threshold)
+		{
+			int i = Pool[random.Next(0, Pool.Count)];
+			Builder[i] = Text[i];
+			Pool.Remove(i);
+		}
+		Count++;
+		DisplayText = Builder.ToString();
+		if (Count >= len + threshold) TextTimer.Dispose();
+		this.StateHasChanged();
+	}
+}
+
+@if (HTML.Equals("p"))
+{
+	<p>@DisplayText</p>
+}
+else if (HTML.Equals("h1"))
+{
+	<h1>@DisplayText</h1>
+}

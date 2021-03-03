@@ -1,20 +1,10 @@
-﻿using System.Collections.Generic;
-
-namespace WebsiteOPr.Shared
+﻿namespace WebsiteOPr.Shared
 {
 	public class TextModel
 	{
-		public string Welcome { get; set; } = "";
-		public string Intro { get; set; } = "";
-
-		public Dictionary<string, string> GetTexts()
-		{
-			Dictionary<string, string> texts = new Dictionary<string, string>
-			{
-				{ "Welcome", Welcome },
-				{ "Intro", Intro }
-			};
-			return texts;
-		}
+		public string[] English { get; set; }
+		public string[] Norwegian { get; set; }
+		public string[] Japanese { get; set; }
+		public string[] Korean { get; set; }
 	}
 }
